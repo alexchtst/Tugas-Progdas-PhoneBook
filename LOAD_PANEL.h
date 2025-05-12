@@ -9,17 +9,21 @@
 #include <wx/notebook.h>
 #include <wx/grid.h>
 
-class LOAD_PANEL : public wxPanel {
+class LOAD_PANEL : public wxPanel
+{
 public:
-    LOAD_PANEL(wxNotebook* parent);
+    LOAD_PANEL(wxNotebook *parent);
 
 private:
-    wxGrid* grid;
-    void OnHelloClicked(wxCommandEvent& event);
-    void LoadData();
+    wxGrid *grid = nullptr;
+    wxButton *loadBtn;
+    wxBoxSizer *mainSizer;
+    wxBoxSizer *buttonSizer;
+    bool fileLoaded;
 
-    void OnLoadCSV(wxCommandEvent& event);
-    void LoadCSVFile(const wxString& filepath);
+    void OnLoadCSV(wxCommandEvent &event);
+    void LoadCSVFile(const wxString &filepath);
+    void UpdateButtonPosition();
 };
 
 #endif

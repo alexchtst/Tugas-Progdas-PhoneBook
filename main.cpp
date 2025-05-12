@@ -22,7 +22,7 @@ bool MyApp::OnInit() {
 }
 
 MyFrame::MyFrame()
-    : wxFrame(NULL, wxID_ANY, "Aplikasi dengan Tab", wxDefaultPosition, wxSize(1080, 600)) {
+    : wxFrame(NULL, wxID_ANY, "Aplikasi Pantek", wxDefaultPosition, wxSize(980, 600)) {
 
     SetBackgroundColour(*wxWHITE);
 

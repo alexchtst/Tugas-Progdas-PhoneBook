@@ -7,32 +7,33 @@
 #include <wx/filedlg.h>
 #include <wx/tokenzr.h>
 
+#include "LOAD_PANEL.h"
+#include <wx/filedlg.h>
+#include <wx/textfile.h>
+#include <wx/tokenzr.h>
+
 LOAD_PANEL::LOAD_PANEL(wxNotebook *parent)
-    : wxPanel(parent, wxID_ANY)
+    : wxPanel(parent, wxID_ANY), fileLoaded(false)
 {
+    // Sizer utama
+    const wxString *tempFilePath = nullptr;
 
-    // sizer
-    wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+    mainSizer = new wxBoxSizer(wxVERTICAL);
 
-    // load csv button
-    wxButton *loadBtn = new wxButton(this, wxID_ANY, "Muat dari File CSV");
-    sizer->Add(loadBtn, 0, wxALL | wxCENTER, 5);
+    // Tambah judul
+    wxStaticText *title = new wxStaticText(this, wxID_ANY, "FILE LOAD", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER);
+    title->SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+    mainSizer->Add(title, 0, wxALL | wxALIGN_CENTER, 10);
+
+    // Panel tombol, supaya bisa diganti posisi
+    buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    loadBtn = new wxButton(this, wxID_ANY, "Load file csv");
+    buttonSizer->Add(loadBtn, 0, wxALL, 5);
+    mainSizer->Add(buttonSizer, 0, wxALIGN_CENTER); // tombol awal di tengah
+
     loadBtn->Bind(wxEVT_BUTTON, &LOAD_PANEL::OnLoadCSV, this);
-}
 
-void LOAD_PANEL::LoadData()
-{
-    grid->SetCellValue(0, 0, "001");
-    grid->SetCellValue(0, 1, "Alice");
-    grid->SetCellValue(0, 2, "90");
-
-    grid->SetCellValue(1, 0, "002");
-    grid->SetCellValue(1, 1, "Bob");
-    grid->SetCellValue(1, 2, "85");
-
-    grid->SetCellValue(2, 0, "003");
-    grid->SetCellValue(2, 1, "Charlie");
-    grid->SetCellValue(2, 2, "78");
+    SetSizer(mainSizer);
 }
 
 // open modal to csv file
@@ -45,49 +46,69 @@ void LOAD_PANEL::OnLoadCSV(wxCommandEvent &event)
     if (openFileDialog.ShowModal() == wxID_CANCEL)
         return;
 
-    // LoadCSVFile(openFileDialog.GetPath());
+    LoadCSVFile(openFileDialog.GetPath());
 }
 
 void LOAD_PANEL::LoadCSVFile(const wxString &filepath)
 {
     wxTextFile file;
-
-    // file not found exception
-    if (!file.Open(filepath))
-    {
+    if (!file.Open(filepath)) {
         wxMessageBox("Gagal membuka file!", "Error", wxICON_ERROR);
         return;
     }
 
-    // read file and buffer it
     wxArrayString lines;
     for (wxString str = file.GetFirstLine(); !file.Eof(); str = file.GetNextLine())
         lines.Add(str);
-
     file.Close();
 
-    // empty csv file handling
-    if (lines.IsEmpty())
+    if (lines.IsEmpty()) {
+        wxMessageBox("File kosong atau tidak valid.", "Peringatan", wxICON_WARNING);
         return;
-    
-    
-    // write every fucking data in grid
-    grid->ClearGrid();
-    if (grid->GetNumberRows() > 0)
-        grid->DeleteRows(0, grid->GetNumberRows());
-    if (grid->GetNumberCols() > 0)
-        grid->DeleteCols(0, grid->GetNumberCols());
+    }
 
     wxArrayString headers = wxSplit(lines[0], ',');
-    grid->AppendCols(headers.GetCount());
-    for (size_t c = 0; c < headers.GetCount(); ++c)
+    size_t numCols = headers.GetCount();
+    size_t numRows = lines.GetCount() - 1;
+
+    // Hapus grid lama jika ada
+    if (grid) {
+        mainSizer->Detach(grid);
+        grid->Destroy();
+        grid = nullptr;
+    }
+
+    // Buat grid baru
+    grid = new wxGrid(this, wxID_ANY);
+    grid->CreateGrid(numRows, numCols);
+    grid->DisableDragColSize();
+    grid->DisableDragRowSize();
+    mainSizer->Add(grid, 1, wxEXPAND | wxALL, 10);
+
+    // Set header kolom
+    for (size_t c = 0; c < numCols; ++c)
         grid->SetColLabelValue(c, headers[c]);
 
-    for (size_t r = 1; r < lines.GetCount(); ++r)
-    {
+    // Set isi sel
+    for (size_t r = 1; r < lines.GetCount(); ++r) {
         wxArrayString rowData = wxSplit(lines[r], ',');
-        grid->AppendRows(1);
-        for (size_t c = 0; c < rowData.GetCount(); ++c)
+        for (size_t c = 0; c < rowData.GetCount() && c < numCols; ++c)
             grid->SetCellValue(r - 1, c, rowData[c]);
     }
+
+    fileLoaded = true;
+    UpdateButtonPosition();
+    Layout();
+}
+
+void LOAD_PANEL::UpdateButtonPosition()
+{
+    if (!fileLoaded)
+        return;
+
+    mainSizer->Detach(buttonSizer);
+
+    mainSizer->Add(buttonSizer, 0, wxALIGN_RIGHT | wxALL, 10);
+
+    Layout();
 }
