@@ -7,7 +7,6 @@
 #include <wx/filedlg.h>
 #include <wx/tokenzr.h>
 
-#include "LOAD_PANEL.h"
 #include <wx/filedlg.h>
 #include <wx/textfile.h>
 #include <wx/tokenzr.h>
