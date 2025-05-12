@@ -7,9 +7,6 @@
 #include <wx/filedlg.h>
 #include <wx/tokenzr.h>
 
-#include <wx/filedlg.h>
-#include <wx/textfile.h>
-#include <wx/tokenzr.h>
 
 LOAD_PANEL::LOAD_PANEL(wxNotebook *parent)
     : wxPanel(parent, wxID_ANY), fileLoaded(false)
