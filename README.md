@@ -7,6 +7,47 @@ Aplikasi desktop sederhana berbasis **wxWidgets** yang memungkinkan pengguna unt
 | Alex Cinatra Hutasoit | 22/505820/TK/55377 | alexcinatrahutasoit@mail.ugm.ac.id |
 | Hansen Justin Handijaya || hansenjustinhandijaya@mail.ugm.ac.id |
 
+## OOP Implementation
+
+Aplikasi ini dibangun menggunakan pendekatan **Object-Oriented Programming (OOP)** dengan library **wxWidgets**, dan menerapkan beberapa pilar utama OOP, yaitu:
+
+---
+
+### 🧬 1. Inheritance (Pewarisan)
+
+Inheritance digunakan untuk membangun **antarmuka utama (frame)** dan **panel-panel** aplikasi dengan cara menurunkan kelas-kelas dari komponen wxWidgets:
+
+* `MyFrame` mewarisi dari `wxFrame`, menjadi jendela utama aplikasi.
+* `CRUD_PANEL` dan `LOAD_PANEL` mewarisi dari `wxPanel`, yang memungkinkan mereka digunakan sebagai tab (halaman) di dalam `wxNotebook`.
+
+Dengan pewarisan ini, masing-masing panel mendapatkan semua fitur dasar dari `wxPanel`, dan dapat menambahkan fungsionalitas sesuai kebutuhan spesifik.
+
+### 🔒 2. Encapsulation (Enkapsulasi)
+
+Encapsulation diterapkan dengan **menyembunyikan detail implementasi** dan menjaga **data internal tetap terlindungi** dari luar kelas:
+
+* Variabel seperti `selectedIndex` pada `CRUD_PANEL` hanya dapat diakses dan dimodifikasi melalui fungsi anggota (misalnya saat memilih dan mengedit item).
+* Objek-objek GUI seperti `nameCtrl`, `grid`, `listCtrl`, dan `mainSizer` adalah anggota privat dari kelas panel, tidak diakses langsung dari luar.
+* Fungsi seperti `LoadCSVFile()` dan `UpdateButtonPosition()` bersifat internal untuk `LOAD_PANEL`, dan tidak diekspos ke luar.
+
+### 🎭 3. Abstraction (Abstraksi)
+
+Abstraksi dicapai dengan **memisahkan antarmuka pengguna dari logika internal**:
+
+* Pengguna cukup menekan tombol dan melihat hasil (misalnya menambah atau memuat data), tanpa mengetahui cara penyimpanan, pemrosesan teks, atau pembentukan grid/list.
+* Kelas `CRUD_PANEL` dan `LOAD_PANEL` menyederhanakan interaksi pengguna ke dalam fungsi spesifik seperti `OnAdd`, `OnEdit`, `OnLoadCSV`, dan `UpdateButtonPosition`.
+
+**modular dan mudah dimengerti**
+
+### 🔁 4. Polymorphism (Polimorfisme)
+
+Polimorfisme dalam bentuk eksplisit tidak terlalu dominan di aplikasi ini, namun konsepnya tetap hadir secara **implisit melalui pewarisan wxWidgets**:
+
+* Semua komponen panel (`wxPanel`) bisa diperlakukan sebagai objek dari superclass `wxWindow` oleh wxWidgets.
+* `wxNotebook->AddPage(...)` menerima argumen bertipe `wxWindow*`, sehingga dapat menampung objek dari kelas turunan manapun seperti `CRUD_PANEL` atau `LOAD_PANEL`.
+
+`wxNotebook` hanya tahu bahwa itu adalah `wxWindow`, namun tetap bisa menangani berbagai jenis panel, merupakan implementasi dari **polimorfisme dinamis (runtime polymorphism)**.
+
 ## Deskripsi
 
 Aplikasi ini dirancang untuk memenuhi kebutuhan dasar dalam pengelolaan data kontak seperti nama, alamat, dan nomor telepon. Terdapat dua tab utama dalam aplikasi:
@@ -42,4 +83,3 @@ Setiap perubahan pada data secara otomatis diperbarui di tampilan tabel, dan inp
 - Library GUI: **wxWidgets 3.2+**
 - Sistem Build: **CMake**
 - Platform: **Cross-platform (Windows, Linux, macOS)**
-
