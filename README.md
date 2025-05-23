@@ -5,7 +5,7 @@ Aplikasi desktop sederhana berbasis **wxWidgets** yang memungkinkan pengguna unt
 | Name | NIM | Email |
 |-|-|-|
 | Alex Cinatra Hutasoit | 22/505820/TK/55377 | alexcinatrahutasoit@mail.ugm.ac.id |
-| Hansen Justin Handijaya || hansenjustinhandijaya@mail.ugm.ac.id |
+| Hansen Justin Handijaya | 22/493030/TK/53980 | hansenjustinhandijaya@mail.ugm.ac.id |
 
 ## OOP Implementation
 
